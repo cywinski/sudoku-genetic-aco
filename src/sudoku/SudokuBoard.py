@@ -14,6 +14,14 @@ class SudokuBoard:
         for value in values_set:
             self._set_cell_fixed_value(self.get_cell(value[0], value[1]), value[2])
 
+    def read_from_file(self, filename: str) -> None:
+        with open(filename, "r") as rf:
+            for i, line in enumerate(rf):
+                sudoku_row = line.rstrip()
+                for j, num in enumerate(sudoku_row):
+                    if int(num) != 0:
+                        self._set_cell_fixed_value(self.get_cell(i, j), int(num))
+
     def _set_cell_fixed_value(self, cell: Cell, value: int) -> None:
         if cell.set_fixed_value(value):
             self._propagate_constraints(cell)
@@ -38,9 +46,9 @@ class SudokuBoard:
         for peer in cell_peers:
             self._eliminate_from_value_set(peer, cell.value_set.copy().pop())
 
-        # 2) If any values in a cell’s value set are in the only possible
-        # place in any of the cell’s units, then fix that value
-        for peer in cell_peers:
+            # 2) If any values in a cell’s value set are in the only possible
+            # place in any of the cell’s units, then fix that value
+            # for peer in cell_peers:
             for unit in [self.get_row_unit(peer), self.get_col_unit(peer), self.get_box_unit(peer)]:
                 all_possible_values = [v for v in cell.value_set for cell in unit]
                 for value in peer.value_set:
