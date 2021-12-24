@@ -20,7 +20,6 @@ def test_set_fixed_value_success():
 def test_set_fixed_value_failed():
     cell = Cell(0, 0)
     assert (cell.set_fixed_value(2) is True)
-    assert (cell.set_fixed_value(2) is False)
     assert (cell.set_fixed_value(6) is False)
 
 
