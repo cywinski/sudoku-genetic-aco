@@ -1,5 +1,5 @@
-from src.sudoku.Cell import Cell
-from src.sudoku.SudokuBoard import SudokuBoard
+from src.aco.sudoku.Cell import Cell
+from src.aco.sudoku.SudokuBoard import SudokuBoard
 
 TEST_VALUES_SET = {
     (0, 1, 6),
@@ -67,7 +67,7 @@ def test_init_cell_values():
 
 
 def test_read_from_file():
-    TEST_BOARD.read_from_file("../../../resources/boards/board1.txt")
+    TEST_BOARD.read_from_file("../../../../resources/boards/board1.txt")
     expected_result = [
         [{4}, {6}, {7}, {1}, {8}, {9}, {5}, {3}, {2}],
         [{1, 5}, {3}, {5, 8, 9}, {2}, {4, 5}, {7}, {1, 8, 9}, {4, 6, 8}, {1, 6, 9}],

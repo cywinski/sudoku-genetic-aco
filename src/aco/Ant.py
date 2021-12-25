@@ -2,8 +2,8 @@ from typing import Tuple
 
 import numpy as np
 
-from ..sudoku.Cell import Cell
-from ..sudoku.SudokuBoard import SudokuBoard
+from src.aco.sudoku import Cell
+from src.aco.sudoku.SudokuBoard import SudokuBoard
 
 
 class Ant:
@@ -14,12 +14,11 @@ class Ant:
         self.greediness = greediness
         self.pheromone = global_pheromone
         self.pheromone_decay = pheromone_decay
-        self.failed_count = 0
+        self.failed_cells_count = 0
         self.fixed_cells_number = 0
 
     def _get_board_index(self, pos: int) -> Tuple[np.ndarray]:
         return np.unravel_index(pos, shape=(self.board.size ** 2, self.board.size))
-        # return [(pos - 1) // self.board.size, (pos - 1) % self.board.size]
 
     def _choose_value_from_value_set(self, current_cell: Cell) -> int:
         if np.random.uniform() < self.greediness:
@@ -49,7 +48,6 @@ class Ant:
             self._update_local_pheromone(selection)
             self.fixed_cells_number += 1
         elif current_cell.is_failed():
-            # TODO: Take this into account
-            self.failed_count += 1
+            self.failed_cells_count += 1
 
         self._move_to_next_cell()

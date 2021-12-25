@@ -3,7 +3,7 @@ from random import randint
 
 import numpy as np
 
-from src.sudoku.SudokuBoard import SudokuBoard
+from src.aco.sudoku.SudokuBoard import SudokuBoard
 from .Ant import Ant
 
 
@@ -58,8 +58,8 @@ class ACOSolver:
         fixed_values_best = -np.inf
         iteration_best_ant = None
         for ant in ants:
-            if ant.fixed_cells_number > fixed_values_best:
-                fixed_values_best = ant.fixed_cells_number
+            if ant.fixed_cells_number - ant.failed_cells_count > fixed_values_best:
+                fixed_values_best = ant.fixed_cells_number - ant.failed_cells_count
                 iteration_best_ant = ant
         return fixed_values_best, iteration_best_ant
 

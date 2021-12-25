@@ -1,4 +1,4 @@
-from src.sudoku.Cell import Cell
+from src.aco.sudoku.Cell import Cell
 
 TEST_CELL = Cell(0, 0)
 
