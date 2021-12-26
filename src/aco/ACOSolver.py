@@ -90,5 +90,7 @@ class ACOSolver:
                 self._update_global_pheromone(pheromone_to_add, iteration_best_ant)
 
             self._evaporate_best_value()
+            print(
+                f"Iteration: {i} Fixed cells %: {(len(best_solution.board.get_fixed_cells()) / best_solution.board.size ** 2) * 100:.3f} Pheromone to add: {pheromone_to_add:.3f}")
             i += 1
         return best_solution

@@ -32,6 +32,13 @@ class SudokuBoard:
             if cell.has_fixed_value():
                 self._propagate_constraints(cell)
 
+    def get_fixed_cells(self) -> list:
+        fixed_cells = []
+        for cell in self.board.flatten():
+            if cell.has_fixed_value():
+                fixed_cells.append(cell)
+        return fixed_cells
+
     @staticmethod
     def _get_fixed_values(cells: set) -> set:
         all_fixed_values = []
@@ -51,7 +58,7 @@ class SudokuBoard:
 
             # 2) If any values in a cell’s value set are in the only possible
             # place in any of the cell’s units, then fix that value
-            # for peer in cell_peers:
+        for peer in cell_peers:
             for unit in [self.get_row_unit(peer), self.get_col_unit(peer), self.get_box_unit(peer)]:
                 all_possible_values = [v for v in cell.value_set for cell in unit]
                 for value in peer.value_set:
