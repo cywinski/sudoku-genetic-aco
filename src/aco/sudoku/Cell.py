@@ -49,4 +49,5 @@ class Cell:
         self._value_set = value
 
     def __repr__(self) -> str:
-        return "".join([str(v) for v in self.value_set])
+        repr_list = [str(v) for v in self.value_set] if self.value_set else ' '
+        return "".join(repr_list)

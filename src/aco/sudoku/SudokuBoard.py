@@ -1,3 +1,4 @@
+import itertools
 import math
 
 import numpy as np
@@ -6,7 +7,6 @@ from .Cell import Cell
 
 
 class SudokuBoard:
-    # TODO: Add is_correct() method
     def __init__(self, size: int) -> None:
         self.size = size
         self.board = np.array([[Cell(x, y) for y in range(self.size)] for x in range(self.size)])
@@ -52,12 +52,11 @@ class SudokuBoard:
         # 1) Eliminate from a cell’s value set all values that are fixed in
         # any of the cell’s peers
         for peer in cell_peers:
-            # TODO: Debug as this should not happen
-            if cell.value_set:
+            if not peer.is_failed() and not peer.has_fixed_value():
                 self.eliminate_from_value_set(peer, cell.value_set.copy().pop())
 
-            # 2) If any values in a cell’s value set are in the only possible
-            # place in any of the cell’s units, then fix that value
+        # 2) If any values in a cell’s value set are in the only possible
+        # place in any of the cell’s units, then fix that value
         for peer in cell_peers:
             for unit in [self.get_row_unit(peer), self.get_col_unit(peer), self.get_box_unit(peer)]:
                 all_possible_values = [v for v in cell.value_set for cell in unit]
@@ -79,11 +78,32 @@ class SudokuBoard:
         box_start_row = (cell.x // box_size) * box_size
         box_start_col = (cell.y // box_size) * box_size
         return set(
-            [c for c in self.board[box_start_row:box_start_row + 3, box_start_col:box_start_col + 3].flatten() if
-             (c.x != cell.x or c.y != cell.y)])
+                [c for c in self.board[box_start_row:box_start_row + 3, box_start_col:box_start_col + 3].flatten() if
+                 (c.x != cell.x or c.y != cell.y)])
 
     def get_peers(self, cell: Cell) -> set:
         return set.union(self.get_row_unit(cell), self.get_col_unit(cell), self.get_box_unit(cell))
+
+    @staticmethod
+    def _is_row_correct(row: np.ndarray) -> bool:
+        values = []
+        for cell in row:
+            if not cell.has_fixed_value():
+                return False
+            values.extend(list(cell.value_set))
+        return len(values) == 9 and sum(values) == sum(set(values))
+
+    def is_correct(self) -> bool:
+        bad_rows = [row for row in self.board if not self._is_row_correct(row)]
+        grid = list(zip(*self.board))
+        bad_cols = [col for col in grid if not self._is_row_correct(np.array(col))]
+        squares = []
+        for i in range(self.size, 3):
+            for j in range(self.size, 3):
+                square = list(itertools.chain(row[j:j + 3] for row in grid[i:i + 3]))
+                squares.append(square)
+        bad_squares = [square for square in squares if not self._is_row_correct(np.array(square))]
+        return not (bad_rows or bad_squares or bad_cols)
 
     @property
     def board(self):

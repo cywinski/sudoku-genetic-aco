@@ -4,12 +4,12 @@ from src.aco.ACOSolver import ACOSolver
 from src.aco.Ant import Ant
 
 TEST_ACO_SOLVER = ACOSolver(
-    board_size=9,
-    board_file="../../../resources/boards/board1.txt",
-    num_ants=10,
-    max_iterations=100,
-    greediness=0.4
-)
+        board_size=9,
+        board_file="../../../resources/boards/logic-solvable/board1.txt",
+        num_ants=10,
+        max_iterations=100,
+        greediness=0.4
+        )
 
 
 def test_init_global_pheromone():

@@ -8,18 +8,15 @@ from .Ant import Ant
 
 
 class ACOSolver:
-    def __init__(self,
-                 board_size: int,
-                 board_file: str,
-                 num_ants: int,
-                 max_iterations: int,
-                 greediness: float,
-                 pheromone_decay: float = 0.1,
-                 evaporation_rate: float = 0.1,
-                 best_evaporation_rate: float = 0.1) -> None:
+    def __init__(
+            self, board_size: int, board_file: str, num_ants: int, max_iterations: int, greediness: float,
+            pheromone_decay: float = 0.1, evaporation_rate: float = 0.1,
+            best_evaporation_rate: float = 0.1
+            ) -> None:
         self.board_size = board_size
         self.board = SudokuBoard(self.board_size)
         self.board.read_from_file(board_file)  # read in puzzle and propagate constraints
+        print(self.board)
         self.global_pheromone = self._init_global_pheromone()
         self.num_ants = num_ants
         self.max_iterations = max_iterations
@@ -44,13 +41,8 @@ class ACOSolver:
             while start_pos in taken_positions:
                 start_pos = randint(0, self.board_size ** 2 - 1)
             taken_positions.add(start_pos)
-            ants.append(Ant(
-                board_copy=copy.deepcopy(self.board),
-                start_pos=start_pos,
-                greediness=self.greediness,
-                global_pheromone=self.global_pheromone,
-                pheromone_decay=self.pheromone_decay
-            ))
+            ants.append(Ant(board_copy=copy.deepcopy(self.board), start_pos=start_pos, greediness=self.greediness,
+                            global_pheromone=self.global_pheromone, pheromone_decay=self.pheromone_decay))
         return ants
 
     @staticmethod
@@ -91,6 +83,6 @@ class ACOSolver:
 
             self._evaporate_best_value()
             print(
-                f"Iteration: {i} Fixed cells %: {(len(best_solution.board.get_fixed_cells()) / best_solution.board.size ** 2) * 100:.3f} Pheromone to add: {pheromone_to_add:.3f}")
+                    f"Iteration: {i} Fixed cells %: {(len(best_solution.board.get_fixed_cells()) / best_solution.board.size ** 2) * 100:.3f} Pheromone to add: {pheromone_to_add:.3f} Is board correct: {best_solution.board.is_correct()}")
             i += 1
         return best_solution
