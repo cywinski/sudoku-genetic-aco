@@ -4,24 +4,16 @@ class Cell:
         self.y = y
         self.value_set = {1, 2, 3, 4, 5, 6, 7, 8, 9}
 
-    def set_fixed_value(self, value: int) -> bool:
-        if value in self.value_set and not self.is_failed():
-            self.value_set = {value}
-            return True
-        else:
-            return False
+    def set_fixed_value(self, value: int) -> None:
+        self.value_set = {value}
 
-    def eliminate(self, value: int) -> bool:
-        if value in self.value_set and not self.is_failed():
-            self.value_set.remove(value)
-            return True
-        else:
-            return False
+    def eliminate(self, value: int) -> None:
+        self.value_set.remove(value)
 
     def has_fixed_value(self) -> bool:
         return len(self.value_set) == 1
 
-    def is_failed(self):
+    def is_failed(self) -> bool:
         return len(self.value_set) == 0
 
     @property

@@ -15,8 +15,8 @@ TEST_ACO_SOLVER = ACOSolver(
 def test_init_global_pheromone():
     expected_result = np.array([[1 / (9 ** 2)] * 9] * (9 ** 2))
 
-    assert (TEST_ACO_SOLVER.global_pheromone.shape == (81, 9))
-    assert (np.array_equal(TEST_ACO_SOLVER.global_pheromone, expected_result))
+    assert (TEST_ACO_SOLVER.pheromone.shape == (81, 9))
+    assert (np.array_equal(TEST_ACO_SOLVER.pheromone, expected_result))
 
 
 def test_init_ants():

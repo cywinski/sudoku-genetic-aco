@@ -1,7 +1,5 @@
 from src.aco.sudoku.Cell import Cell
 
-TEST_CELL = Cell(0, 0)
-
 
 def test_create_cell():
     cell = Cell(0, 0)
@@ -13,23 +11,11 @@ def test_create_cell():
 
 def test_set_fixed_value_success():
     cell = Cell(0, 0)
-    assert (cell.set_fixed_value(2) is True)
+    cell.set_fixed_value(2)
     assert (cell.value_set == {2})
-
-
-def test_set_fixed_value_failed():
-    cell = Cell(0, 0)
-    assert (cell.set_fixed_value(2) is True)
-    assert (cell.set_fixed_value(6) is False)
 
 
 def test_eliminate_success():
     cell = Cell(0, 0)
-    assert (cell.eliminate(9) is True)
-    assert (cell.eliminate(1) is True)
-
-
-def test_eliminate_failed():
-    cell = Cell(0, 0)
-    assert (cell.eliminate(9) is True)
-    assert (cell.eliminate(9) is False)
+    cell.eliminate(9)
+    assert (9 not in cell.value_set)

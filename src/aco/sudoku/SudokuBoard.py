@@ -10,9 +10,13 @@ class SudokuBoard:
     def __init__(self, size: int) -> None:
         self.size = size
         self.board = np.array([[Cell(x, y) for y in range(self.size)] for x in range(self.size)])
+        self.num_fixed_cells = 0
+        self.num_infeasible_cells = 0
+        self.num_predefined_cells = 0
 
     def init_cell_values(self, values_set: set) -> None:
         for value in values_set:
+            self.num_predefined_cells += 1
             self.set_cell_fixed_value(self.get_cell(value[0], value[1]), value[2])
 
     def read_from_file(self, filename: str) -> None:
@@ -21,15 +25,22 @@ class SudokuBoard:
                 sudoku_row = line.rstrip()
                 for j, num in enumerate(sudoku_row):
                     if int(num) != 0:
+                        self.num_predefined_cells += 1
                         self.set_cell_fixed_value(self.get_cell(i, j), int(num))
 
     def set_cell_fixed_value(self, cell: Cell, value: int) -> None:
-        if cell.set_fixed_value(value):
-            self._propagate_constraints(cell)
+        if cell.has_fixed_value() or value not in cell.value_set:
+            return
+
+        cell.set_fixed_value(value)
+        self.num_fixed_cells += 1
+        self._propagate_constraints(cell)
 
     def eliminate_from_value_set(self, cell: Cell, value: int) -> None:
-        if cell.eliminate(value):
+        if value in cell.value_set:
+            cell.eliminate(value)
             if cell.has_fixed_value():
+                self.num_fixed_cells += 1
                 self._propagate_constraints(cell)
 
     def get_fixed_cells(self) -> list:
@@ -52,17 +63,25 @@ class SudokuBoard:
         # 1) Eliminate from a cell’s value set all values that are fixed in
         # any of the cell’s peers
         for peer in cell_peers:
-            if not peer.is_failed() and not peer.has_fixed_value():
-                self.eliminate_from_value_set(peer, cell.value_set.copy().pop())
+            if not peer.is_failed() and not cell.is_failed():
+                self.eliminate_from_value_set(peer, list(cell.value_set)[0])
 
         # 2) If any values in a cell’s value set are in the only possible
         # place in any of the cell’s units, then fix that value
         for peer in cell_peers:
             for unit in [self.get_row_unit(peer), self.get_col_unit(peer), self.get_box_unit(peer)]:
-                all_possible_values = [v for v in cell.value_set for cell in unit]
-                for value in peer.value_set:
-                    if value not in set(all_possible_values):
-                        self.set_cell_fixed_value(cell, value)
+                if not peer.is_failed() and not peer.has_fixed_value():
+                    all_possible_values = []
+                    for c in unit:
+                        for v in c.value_set:
+                            all_possible_values.append(v)
+                    for v in peer.value_set:
+                        if v not in set(all_possible_values):
+                            self.set_cell_fixed_value(peer, v)
+                            break  # always max 1 value
+
+        if cell.is_failed():
+            self.num_infeasible_cells += 1
 
     def get_cell(self, x: int, y: int) -> Cell:
         return self.board[x, y]
