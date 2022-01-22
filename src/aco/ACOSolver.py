@@ -1,4 +1,5 @@
 import copy
+import time
 
 import numpy as np
 
@@ -23,6 +24,7 @@ class ACOSolver:
         self.evaporation_rate = evaporation_rate
         self.best_evaporation_rate = best_evaporation_rate
         self.best_board = self.board
+        self.solution_time = 0
 
     def _init_pheromone(self) -> np.ndarray:
         return np.full(shape=(self.board_size ** 2, 9), fill_value=1 / (self.board_size ** 2))
@@ -68,6 +70,7 @@ class ACOSolver:
         best_pheromone_to_add = 0
         best_ant = None
         solved = False
+        start = time.time()
         while not solved and i < self.max_iterations:
             ants = self._init_ants()
             for cell_num in range(self.board_size ** 2):
@@ -84,9 +87,10 @@ class ACOSolver:
                 best_ant = iteration_best_ant
                 if fixed_values_best == self.board_size ** 2 - self.board.num_predefined_cells:
                     solved = True
+                    self.solution_time = time.time() - start
 
             self._update_pheromone(best_pheromone_to_add)
             best_pheromone_to_add *= (1.0 - self.evaporation_rate)
             print(
-                    f"Iteration: {i} Fixed cells %: {(len(best_ant.board.get_fixed_cells()) / best_ant.board.size ** 2) * 100:.3f} Pheromone to add: {pheromone_to_add:.3f} Is board correct: {best_ant.board.is_correct()}")
+                    f"Iteration: {i + 1} Fixed cells %: {(len(best_ant.board.get_fixed_cells()) / best_ant.board.size ** 2) * 100:.2f} Pheromone to add: {pheromone_to_add:.3f}")
             i += 1
