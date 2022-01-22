@@ -6,7 +6,7 @@ from src.genetic_algorithm.individual.Individual import Individual
 
 TEST_BOARD_PATH_1 = "src/tests/genetic_algorithm/test_board_starting.txt"
 TEST_BOARD_SOLVED_PATH = "src/tests/genetic_algorithm/solved_sudoku.txt"
-# random.seed(100)
+random.seed(110)
 
 def test_adding():
     assert 1 + 1 == 2
@@ -84,6 +84,7 @@ def test_sort():
 def test_cross():
     solver = GASolver(board_path=TEST_BOARD_PATH_1, population_size=35, cross_probability=1)
     solver.initialize_population()
+    solver.init_auxiliary()
     solver.rate_population()
     solver.sort_population()
     par_1, par_2 = solver.perform_cross()

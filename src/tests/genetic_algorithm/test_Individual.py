@@ -1,9 +1,11 @@
 import copy
+import random
 
 import pytest
 
 from src.genetic_algorithm.individual.Individual import Individual, is_ok_mini_board
 
+random.seed(120)
 
 def test_adding():
     assert 1 + 1 == 2

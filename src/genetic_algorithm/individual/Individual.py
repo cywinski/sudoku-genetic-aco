@@ -20,6 +20,28 @@ class Individual:
         self.board = []
         self.rating = None
 
+    def __repr__(self):
+        if len(self.board) == 0:
+            raise Exception("Cant represent empty board!")
+        temp_array = []
+        mini_board_shape = int(math.sqrt(self.sudoku_shape))
+        for index_row in range(self.sudoku_shape):
+            for index_col in range(self.sudoku_shape):
+                index_mini_board = mini_board_shape * int(index_row/mini_board_shape) + int(index_col/mini_board_shape)
+                index_row_board = mini_board_shape * (index_row % mini_board_shape)
+                index_col_board = index_col % mini_board_shape
+                temp_array.append(self.board[index_mini_board][index_row_board+index_col_board])
+        representation = ''
+        for index_sudoku in range(len(temp_array)):
+            if index_sudoku % self.sudoku_shape == 0 and index_sudoku != 0:
+                representation += '\n'
+            if index_sudoku % (self.sudoku_shape * mini_board_shape) == 0 and index_sudoku != 0:
+                representation += ('=' * (self.sudoku_shape + (mini_board_shape - 1) * 2) + '\n')
+            if index_sudoku % mini_board_shape == 0 and index_sudoku % self.sudoku_shape != 0:
+                representation += '||'
+            representation += str(temp_array[index_sudoku])
+        return representation
+
     def init_from_file(self, path: str):
         if not os.path.isfile(path):
             return False
@@ -78,7 +100,7 @@ class Individual:
                 new_board = copy.deepcopy(self.board[index_mini_board])
                 new_board[mutated_positions[0]] = self.board[index_mini_board][mutated_positions[1]]
                 new_board[mutated_positions[1]] = self.board[index_mini_board][mutated_positions[0]]
-                if is_ok_mini_board(new_board, comparator[index_mini_board]):
+                if is_ok_mini_board(current=new_board, original=comparator[index_mini_board]):
                     self.board[index_mini_board] = new_board
 
     def rate(self):
@@ -107,14 +129,5 @@ class Individual:
             for ok_number in ok_permutation:
                 if ok_number not in collect_column:
                     rating += 1
-        # if rating is repeating, add penalty
-
-        # if self.actual_rating is None or self.actual_rating != rating:
-        #     self.actual_rating = rating
-        #     self.rating = rating
-        #     self.n_of_repeated_ratings = 0
-        # elif rating == self.actual_rating:
-        #     self.n_of_repeated_ratings += 1
-        #     self.rating += 1
-
         self.rating = rating
+

@@ -48,7 +48,6 @@ class GASolver:
         first_parent = first_parent_group[0]
         second_parent = second_parent_group[0]
         if random.random() < self.cross_probability:
-            # maybe partition by row of sub-grids?
             place_of_partition = random.randint(1, 8)
 
             new_first_parent = Individual(sudoku_shape=self.sudoku_shape)
@@ -63,9 +62,12 @@ class GASolver:
             if new_first_parent.is_board_ok_in_mini_boards() is False or \
                     new_second_parent.is_board_ok_in_mini_boards() is False:
                 raise Exception("Mini-boards are wrong!")
-            if is_ok_mini_board(current=new_first_parent.board, original=self.auxiliary_individual.board) is False or \
-                    is_ok_mini_board(current=new_second_parent.board, original=self.auxiliary_individual.board) is False:
-                raise Exception("Mini-boards dont match starting board!")
+            for index in range(len(new_first_parent.board)):
+                if is_ok_mini_board(current=new_first_parent.board[index],
+                                    original=self.auxiliary_individual.board[index]) is False or \
+                        is_ok_mini_board(current=new_second_parent.board[index],
+                                         original=self.auxiliary_individual.board[index]) is False:
+                    raise Exception("Mini-boards dont match starting board!")
             return new_first_parent, new_second_parent
         else:
             return first_parent, second_parent
