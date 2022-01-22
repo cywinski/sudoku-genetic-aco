@@ -115,6 +115,9 @@ class GASolver:
             f"Number of reinitializations of population: {self._number_reinitializations}\n"
         )
 
+    def get_numerical_statistics(self):
+        return self._number_iterations, self._loss_fun_executions, self._number_reinitializations
+
     def solve(self):
         self._reset_statistics()
         best_so_far_board = None
