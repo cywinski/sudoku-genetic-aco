@@ -4,22 +4,17 @@ class Cell:
         self.y = y
         self.value_set = {1, 2, 3, 4, 5, 6, 7, 8, 9}
 
-    def set_fixed_value(self, value: int) -> bool:
-        if value in self.value_set and not self.has_fixed_value():
-            self.value_set = {value}
-            return True
-        else:
-            return False
+    def set_fixed_value(self, value: int) -> None:
+        self.value_set = {value}
 
-    def eliminate(self, value: int) -> bool:
-        if value in self.value_set and not self.has_fixed_value():
-            self.value_set.remove(value)
-            return True
-        else:
-            return False
+    def eliminate(self, value: int) -> None:
+        self.value_set.remove(value)
 
     def has_fixed_value(self) -> bool:
         return len(self.value_set) == 1
+
+    def is_failed(self) -> bool:
+        return len(self.value_set) == 0
 
     @property
     def x(self) -> int:
@@ -46,4 +41,5 @@ class Cell:
         self._value_set = value
 
     def __repr__(self) -> str:
-        return f"{self.x, self.y} -> " + "".join([str(v) for v in self.value_set])
+        repr_list = [str(v) for v in self.value_set] if self.value_set else ' '
+        return "".join(repr_list)
