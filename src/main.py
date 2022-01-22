@@ -1,15 +1,15 @@
-import random
+from timeit import default_timer as timer
 
 from src.aco.ACOSolver import ACOSolver
 from src.genetic_algorithm.GASolver import GASolver
-from timeit import default_timer as timer
+
 
 # random.seed(10)
 
 def mainACO():
     solver = ACOSolver(
             board_size=9,
-            board_file="../resources/boards/logic-solvable/reddwarf.txt",
+            board_file="../resources/boards/logic-solvable/hard/coly013.txt",
             num_ants=10,
             max_iterations=1000,
             greediness=0.9,
@@ -48,7 +48,6 @@ def mainGA():
     solver.show_statistics()
 
 
-
 if __name__ == '__main__':
-    # mainACO()
-    mainGA()
+    mainACO()
+    # mainGA()

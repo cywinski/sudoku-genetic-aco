@@ -65,7 +65,7 @@ class ACOSolver:
                 self.pheromone[i][list(cell.value_set)[0] - 1] = (1 - self.evaporation_rate) * self.pheromone[i][
                     list(cell.value_set)[0] - 1] + self.evaporation_rate * best_pheromone_to_add
 
-    def solve(self):
+    def solve(self, logging=True):
         i = 0
         best_pheromone_to_add = 0
         best_ant = None
@@ -91,6 +91,9 @@ class ACOSolver:
 
             self._update_pheromone(best_pheromone_to_add)
             best_pheromone_to_add *= (1.0 - self.evaporation_rate)
-            print(
-                    f"Iteration: {i + 1} Fixed cells %: {(len(best_ant.board.get_fixed_cells()) / best_ant.board.size ** 2) * 100:.2f} Pheromone to add: {pheromone_to_add:.3f}")
+            if logging:
+                print(
+                        f"Iteration: {i + 1} Fixed cells %: {(len(best_ant.board.get_fixed_cells()) / best_ant.board.size ** 2) * 100:.2f} Pheromone to add: {pheromone_to_add:.3f}")
             i += 1
+
+        return solved, i
