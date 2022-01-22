@@ -9,7 +9,8 @@ from src.genetic_algorithm.individual.Individual import Individual, is_ok_mini_b
 class GASolver:
     def __init__(self, board_path: str, population_size: int = 1000, number_generations: int = 1000,
                  sudoku_shape: int = 9, mutation_probability: float = 0.5, elite_param: int = 2,
-                 tournament_size: int = 3, cross_probability: float = 0.5, cataclystic_ratio: int = 5000):
+                 tournament_size: int = 3, cross_probability: float = 0.5, cataclystic_ratio: int = 5000,
+                 print_rate: int = 10):
         self.population_size = population_size
         self.number_generations = number_generations
         self.sudoku_shape = sudoku_shape
@@ -21,6 +22,10 @@ class GASolver:
         self.cataclystic_ratio = cataclystic_ratio
         self.population = []
         self.auxiliary_individual = Individual(sudoku_shape=self.sudoku_shape)
+        self.print_rate = print_rate
+        self._number_iterations = 0
+        self._loss_fun_executions = 0
+        self._number_reinitializations = 0
 
     def _init_population(self):
         self.population.clear()
@@ -75,6 +80,7 @@ class GASolver:
     def rate_population(self):
         for individual in self.population:
             individual.rate()
+            self._loss_fun_executions += 1
 
     def sort_population(self):
         # assuming population is rated!
@@ -98,14 +104,27 @@ class GASolver:
         best_so_far_board = copy.deepcopy(self.population[0].board)
         return best_so_far_board
 
+    def _reset_statistics(self):
+        self._number_iterations = 0
+        self._loss_fun_executions = 0
+        self._number_reinitializations = 0
+
+    def show_statistics(self):
+        print(
+            f"Number of iterations performed: {self._number_iterations}\n"
+            f"Number of loss function executions: {self._loss_fun_executions}\n"
+            f"Number of reinitializations of population: {self._number_reinitializations}\n"
+        )
+
     def solve(self):
-        n_of_generation = 0
+        self._reset_statistics()
         best_so_far_board = None
 
         while True:
             # possible reinitialization
-            if n_of_generation % self.cataclystic_ratio == 0 and n_of_generation != 0:
-                print("~~~~REINITIALIZATION!~~~~")
+            if self._number_iterations % self.cataclystic_ratio == 0 and self._number_iterations != 0:
+                self._number_reinitializations += 1
+                print(f"~~~~Reinitialization {self._number_reinitializations}~~~~")
                 self.initialize_population()
 
             # rate population by fitness and sort
@@ -113,8 +132,9 @@ class GASolver:
             self.sort_population()
 
             # additional penalty if best solution from previous generation is same with current best solution
-            best_so_far_board = self.give_penalty_to_best(best_so_far_board)
-            print(f"On generation {n_of_generation} best individual rate={self.population[0].rating}")
+            best_so_far_board = self.give_penalty_to_best(best_so_far_board=best_so_far_board)
+            if self._number_iterations % self.print_rate == 0:
+                print(f"On generation {self._number_iterations} best individual rate={self.population[0].rating}")
 
             # check stop criterion
             if self.is_sudoku_solved():
@@ -122,13 +142,15 @@ class GASolver:
 
             # create new population with elite_succession, cross and mutation
             new_population = []
-            new_population = self.elite_succession(new_population)
+            new_population = self.elite_succession(new_population=new_population)
             while len(new_population) != self.population_size:
                 individual1, individual2 = self.perform_cross()
-                individual1.mutate(comparator=self.auxiliary_individual.board, mutation_probability=self.mutation_probability)
-                individual2.mutate(comparator=self.auxiliary_individual.board, mutation_probability=self.mutation_probability)
+                individual1.mutate(comparator=self.auxiliary_individual.board,
+                                   mutation_probability=self.mutation_probability)
+                individual2.mutate(comparator=self.auxiliary_individual.board,
+                                   mutation_probability=self.mutation_probability)
                 new_population.append(individual1)
                 new_population.append(individual2)
 
             self.population = new_population
-            n_of_generation += 1
+            self._number_iterations += 1

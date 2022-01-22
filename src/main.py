@@ -23,7 +23,7 @@ def mainACO():
 
 def mainGA():
     solver = GASolver(
-        board_path="../resources/ga_boards/medium/board2.txt",
+        board_path="../resources/ga_boards/easy/board1.txt",
         # board_path="../resources/boards/board2.txt",
         population_size=21,
         number_generations=1000,
@@ -40,9 +40,11 @@ def mainGA():
     winner = solver.solve()
     end = timer()
     print("~"*10)
-    print("Plansza:")
+    print("Board:")
     print(winner)
-    print(f"Rozwiązanie zajęło {end-start} sekund")
+    print(f"Solution took {end-start} seconds!")
+    solver.show_statistics()
+
 
 
 if __name__ == '__main__':
