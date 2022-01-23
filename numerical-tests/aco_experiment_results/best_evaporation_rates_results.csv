@@ -1,4 +1,4 @@
-board_name    ,num_ants,greediness,pheromone_decay,evaporation_rate,best_evaporation_rate,time_mean         ,time_std          ,time_min           ,time_max         ,iter_mean,iter_std          ,iter_min,iter_max,num_failed
-aiescargot.txt,10      ,0.9       ,0.1            ,0.9             ,0.005                ,2.7948101282119753,3.0613846187791904,0.14873242378234863,11.148193359375  ,18.9     ,20.627408950229306,1       ,75      ,0
-aiescargot.txt,10      ,0.9       ,0.1            ,0.9             ,0.05                 ,1.617337203025818 ,1.0940351042169576,0.2949671745300293 ,4.084067106246948,11.0     ,7.54983443527075  ,2       ,28      ,0
-aiescargot.txt,10      ,0.9       ,0.1            ,0.9             ,0.5                  ,1.7682403564453124,1.3992634500127386,0.14827656745910645,4.723987102508545,12.0     ,9.476286192385707 ,1       ,32      ,0
+board_name    ,num_ants,greediness,pheromone_decay,evaporation_rate,best_evaporation_rate,time_mean         ,time_std          ,time_min           ,time_max          ,iter_mean,iter_std          ,iter_min,iter_max,num_failed
+aiescargot.txt,10      ,0.9       ,0.1            ,0.9             ,0.005                ,2.9888367891311645,3.1001388305112707,0.5963459014892578 ,11.655503273010254,20.0     ,20.75090359478353 ,4       ,78      ,0
+aiescargot.txt,10      ,0.9       ,0.1            ,0.9             ,0.05                 ,3.046134901046753 ,2.864964143417915 ,0.29713010787963867,10.129313945770264,20.4     ,19.215618647339983,2       ,68      ,0
+aiescargot.txt,10      ,0.9       ,0.1            ,0.9             ,0.5                  ,1.8134950160980225,1.9356222770257483,0.45372629165649414,7.2986063957214355,11.9     ,12.723600119463045,3       ,48      ,0

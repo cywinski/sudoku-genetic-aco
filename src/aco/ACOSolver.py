@@ -9,10 +9,12 @@ from .Ant import Ant
 
 class ACOSolver:
     def __init__(
-            self, board_size: int, board_file: str, num_ants: int, max_iterations: int, greediness: float,
+            self, random_generator, board_size: int, board_file: str, num_ants: int, max_iterations: int,
+            greediness: float,
             pheromone_decay: float = 0.1, evaporation_rate: float = 0.9,
             best_evaporation_rate: float = 0.005
             ) -> None:
+        self.rng = random_generator  # random generator to use while using np.random
         self.board_size = board_size
         self.board = SudokuBoard(self.board_size)
         self.board.read_from_file(board_file)  # read in puzzle and propagate constraints
@@ -37,11 +39,12 @@ class ACOSolver:
         # assign each ant to a different random cell
         ants = []
         positions = np.arange(0, self.board_size ** 2 - 1)
-        np.random.shuffle(positions)  # shuffled positions on board
+        self.rng.shuffle(positions)  # shuffled positions on board
 
         for m in range(self.num_ants):
             start_pos = positions[m % len(positions)]
-            ants.append(Ant(board_copy=copy.deepcopy(self.board), start_pos=start_pos, parent=self))
+            ants.append(
+                Ant(random_generator=self.rng, board_copy=copy.deepcopy(self.board), start_pos=start_pos, parent=self))
         return ants
 
     @staticmethod
@@ -66,6 +69,12 @@ class ACOSolver:
                     list(cell.value_set)[0] - 1] + self.evaporation_rate * best_pheromone_to_add
 
     def solve(self, logging=True):
+        # To statistics
+        all_fixed_values_best = []
+        all_pheromones_to_add = []
+        all_perc_fixed_cells = []
+        all_iterations = []
+
         i = 0
         best_pheromone_to_add = 0
         best_ant = None
@@ -94,6 +103,12 @@ class ACOSolver:
             if logging:
                 print(
                         f"Iteration: {i + 1} Fixed cells %: {(len(best_ant.board.get_fixed_cells()) / best_ant.board.size ** 2) * 100:.2f} Pheromone to add: {pheromone_to_add:.3f}")
+
+            all_fixed_values_best.append(fixed_values_best)
+            all_pheromones_to_add.append(pheromone_to_add)
+            all_perc_fixed_cells.append((len(best_ant.board.get_fixed_cells()) / best_ant.board.size ** 2) * 100)
+            all_iterations.append(i)
+
             i += 1
 
-        return solved, i
+        return solved, all_fixed_values_best, all_pheromones_to_add, all_perc_fixed_cells, all_iterations
