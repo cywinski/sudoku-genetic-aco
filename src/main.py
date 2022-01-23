@@ -1,21 +1,24 @@
 from timeit import default_timer as timer
 
+import numpy as np
+
 from src.aco.ACOSolver import ACOSolver
 from src.genetic_algorithm.GASolver import GASolver
 
 
 # random.seed(10)
 
-def mainACO():
+def mainACO(rng):
     solver = ACOSolver(
+            random_generator=rng,
             board_size=9,
-            board_file="../resources/boards/logic-solvable/hard/coly013.txt",
+            board_file="../resources/boards/logic-solvable/hard/aiescargot.txt",
             num_ants=10,
             max_iterations=1000,
             greediness=0.9,
             pheromone_decay=0.1,
             evaporation_rate=0.9,
-            best_evaporation_rate=0.005
+            best_evaporation_rate=0.005,
             )
     solver.solve()
     print(f"Solved in: {solver.solution_time:.3f}s")
@@ -49,5 +52,7 @@ def mainGA():
 
 
 if __name__ == '__main__':
-    mainACO()
+    # Initialise a random number generator
+    rng = np.random.default_rng(42)
+    mainACO(rng)
     # mainGA()

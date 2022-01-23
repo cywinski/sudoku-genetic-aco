@@ -7,7 +7,8 @@ from src.aco.sudoku.SudokuBoard import SudokuBoard
 
 
 class Ant:
-    def __init__(self, board_copy: SudokuBoard, start_pos: int, parent) -> None:
+    def __init__(self, random_generator, board_copy: SudokuBoard, start_pos: int, parent) -> None:
+        self.rng = random_generator
         self.board = board_copy
         self.pos = start_pos
         self.failed_cells_count = 0
@@ -21,7 +22,7 @@ class Ant:
 
     def _choose_value_from_value_set(self, current_cell: Cell) -> int:
 
-        if np.random.uniform() > self.parent.greediness:
+        if self.rng.uniform() > self.parent.greediness:
             # greedy selection
             choice = np.array(list(current_cell.value_set))[
                 np.argmax(self.parent.pheromone[self.pos - 1][np.array(list(current_cell.value_set)) - 1])]
@@ -30,7 +31,7 @@ class Ant:
             prob_distribution = [
                     pheromone / np.sum(self.parent.pheromone[self.pos - 1][np.array(list(current_cell.value_set)) - 1])
                     for pheromone in self.parent.pheromone[self.pos - 1][np.array(list(current_cell.value_set)) - 1]]
-            choice = np.random.choice(a=list(current_cell.value_set), p=prob_distribution)
+            choice = self.rng.choice(a=list(current_cell.value_set), p=prob_distribution)
         return choice
 
     def _move_to_next_cell(self) -> None:
