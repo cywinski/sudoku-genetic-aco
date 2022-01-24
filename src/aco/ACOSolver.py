@@ -58,8 +58,8 @@ class ACOSolver:
         return fixed_values_best, iteration_best_ant
 
     def update_local_pheromone(self, pos: int, selection: int) -> None:
-        self.pheromone[pos - 1][selection - 1] = (self.pheromone[pos - 1][selection - 1] * self.evaporation_rate) + (
-                1 / (self.board_size ** 2)) * self.pheromone_decay
+        self.pheromone[pos - 1][selection - 1] = (self.pheromone[pos - 1][selection - 1] * (1 - self.pheromone_decay)) + \
+                                                 ((1 / (self.board_size ** 2)) * self.pheromone_decay)
 
     def _update_pheromone(self, best_pheromone_to_add: float) -> None:
         for i in range(self.board_size ** 2):
@@ -99,7 +99,7 @@ class ACOSolver:
                     self.solution_time = time.time() - start
 
             self._update_pheromone(best_pheromone_to_add)
-            best_pheromone_to_add *= (1.0 - self.evaporation_rate)
+            best_pheromone_to_add *= (1.0 - self.best_evaporation_rate)
             if logging:
                 print(
                         f"Iteration: {i + 1} Fixed cells %: {(len(best_ant.board.get_fixed_cells()) / best_ant.board.size ** 2) * 100:.2f} Pheromone to add: {pheromone_to_add:.3f}")
