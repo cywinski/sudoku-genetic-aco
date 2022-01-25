@@ -29,7 +29,6 @@ def mainACO(rng):
 def mainGA():
     solver = GASolver(
         board_path="../resources/ga_boards/easy/board1.txt",
-        # board_path="../resources/boards/board2.txt",
         population_size=21,
         number_generations=1000,
         sudoku_shape=9,
