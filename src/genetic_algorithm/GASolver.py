@@ -9,7 +9,7 @@ class GASolver:
     def __init__(self, board_path: str, population_size: int = 1000, number_generations: int = 1000,
                  sudoku_shape: int = 9, mutation_probability: float = 0.5, elite_param: int = 2,
                  tournament_size: int = 3, cross_probability: float = 0.5, cataclystic_ratio: int = 5000,
-                 print_rate: int = 10):
+                 print_rate: int = 10, max_n_cataclystic: int = 0):
         self.population_size = population_size
         self.number_generations = number_generations
         self.sudoku_shape = sudoku_shape
@@ -25,6 +25,7 @@ class GASolver:
         self._number_iterations = 0
         self._loss_fun_executions = 0
         self._number_reinitializations = 0
+        self.max_n_cataclystic = max_n_cataclystic
 
     def _init_population(self):
         self.population.clear()
@@ -115,6 +116,9 @@ class GASolver:
             f"Number of reinitializations of population: {self._number_reinitializations}\n"
         )
 
+    def get_numerical_statistics(self):
+        return self._number_iterations, self._loss_fun_executions, self._number_reinitializations
+
     def solve(self):
         self._reset_statistics()
         best_so_far_board = None
@@ -123,6 +127,10 @@ class GASolver:
             # possible reinitialization
             if self._number_iterations % self.cataclystic_ratio == 0 and self._number_iterations != 0:
                 self._number_reinitializations += 1
+
+                if self.max_n_cataclystic != 0 and self._number_reinitializations == self.max_n_cataclystic:
+                    return False
+
                 print(f"~~~~Reinitialization {self._number_reinitializations}~~~~")
                 self.initialize_population()
 
