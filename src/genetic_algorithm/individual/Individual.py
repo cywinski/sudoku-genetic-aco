@@ -92,7 +92,6 @@ class Individual:
         return True
 
     def mutate(self, comparator: List[List], mutation_probability: float = 0.5):
-        # MAYBE ONLY ONE MUTATION IS NOT ENOUGH
         for index_mini_board in range(len(self.board)):
             if random.random() < mutation_probability:
                 positions = [x for x in range(0, self.sudoku_shape)]
