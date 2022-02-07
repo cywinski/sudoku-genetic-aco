@@ -1,10 +1,12 @@
 import copy
 
+import numpy as np
+
 from src.aco.Ant import Ant
 from src.aco.sudoku.SudokuBoard import SudokuBoard
 
 TEST_BOARD = SudokuBoard(9)
-TEST_ANT = Ant(copy.deepcopy(TEST_BOARD), 0, None)
+TEST_ANT = Ant(np.random.default_rng(42), copy.deepcopy(TEST_BOARD), 0, None)
 
 
 def test_get_board_index():
