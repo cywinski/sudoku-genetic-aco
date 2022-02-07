@@ -5,10 +5,11 @@ from src.aco.Ant import Ant
 
 TEST_ACO_SOLVER = ACOSolver(
         board_size=9,
-        board_file="../../../resources/boards/logic-solvable/board1.txt",
+        board_file="../../../resources/boards/logic-solvable/easy/board1.txt",
         num_ants=10,
         max_iterations=100,
-        greediness=0.4
+        greediness=0.4,
+        random_generator=np.random.default_rng(42)
         )
 
 

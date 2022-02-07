@@ -66,28 +66,6 @@ def test_init_cell_values():
     assert (expected_result == result)
 
 
-def test_read_from_file():
-    TEST_BOARD.read_from_file("../../../../resources/boards/logic-solvable/board1.txt")
-    expected_result = [
-        [{4}, {6}, {7}, {1}, {8}, {9}, {5}, {3}, {2}],
-        [{1, 5}, {3}, {5, 8, 9}, {2}, {4, 5}, {7}, {1, 8, 9}, {4, 6, 8}, {1, 6, 9}],
-        [{1, 5}, {2}, {5, 8, 9}, {3}, {4, 5}, {6}, {1, 8, 9}, {4, 8}, {7}],
-        [{8}, {7}, {3}, {6, 9}, {2}, {1}, {4}, {5}, {6, 9}],
-        [{9}, {4}, {2, 6}, {5}, {3, 7}, {8}, {1, 7}, {2, 6}, {1, 3, 6}],
-        [{2, 5, 6}, {1}, {2, 5, 6}, {6, 9}, {3, 7}, {4}, {7, 8, 9}, {2, 6, 8}, {3, 6, 9}],
-        [{2, 6}, {8}, {2, 6}, {7}, {9}, {5}, {3}, {1}, {4}],
-        [{3}, {9}, {4}, {8}, {1}, {2}, {6}, {7}, {5}],
-        [{7}, {5}, {1}, {4}, {6}, {3}, {2}, {9}, {8}]
-    ]
-    result = []
-    for row in TEST_BOARD.board:
-        result.append([cell.value_set for cell in row])
-
-    assert (TEST_BOARD.get_cell(0, 1).value_set == {6})
-    assert (TEST_BOARD.get_cell(7, 2).value_set == {4})
-    assert (expected_result == result)
-
-
 def test_get_row_unit():
     expected_row_unit = {(7, y) for y in range(9) if y != 2}
 
